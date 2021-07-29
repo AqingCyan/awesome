@@ -8,7 +8,7 @@ export const requestUrl = (
   response: Response,
   next: NextFunction,
 ) => {
-  console.log(request.url);
+  console.log('visit router is: ', request.url);
   next();
 };
 
@@ -21,6 +21,10 @@ export const defaultErrorHandler = (
   response: Response,
   next: NextFunction,
 ) => {
+  if (error.message) {
+    console.log('🚧', error.message);
+  }
+
   let statusCode: number, message: string;
 
   // 分类处理异常
