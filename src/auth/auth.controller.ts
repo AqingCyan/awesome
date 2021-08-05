@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { signToken } from './auth.service';
 
 /**
  * 用户登录
@@ -8,7 +9,29 @@ export const login = async (
   response: Response,
   next: NextFunction,
 ) => {
-  const { name } = request.body;
+  const {
+    user: { id, name },
+  } = request.body;
 
-  response.send({ message: `欢迎回来：${name}` });
+  const payload = { id, name };
+
+  try {
+    const token = signToken({ payload });
+    response.send({ id, name, token });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * 验证登录
+ */
+export const validate = (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  // @ts-ignore
+  console.log(request.user);
+  response.sendStatus(200);
 };
