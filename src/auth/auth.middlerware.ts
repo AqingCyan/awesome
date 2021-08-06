@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 
 import * as userService from '../user/user.service';
+import { possess } from './auth.service';
 import { PUBLIC_KEY } from '../app/app.config';
 import { TokenPayload } from './auth.interface';
 
@@ -64,4 +65,41 @@ export const authGuard = (
   } catch (e) {
     next(new Error('UNAUTHORIZED'));
   }
+};
+
+/**
+ * 访问控制
+ */
+interface AccessControlOptions {
+  possessions?: boolean;
+}
+export const accessControl = (options: AccessControlOptions) => {
+  return async (request: Request, response: Response, next: NextFunction) => {
+    console.log('👮‍♀️ 访问控制');
+
+    // @ts-ignore
+    const { id: userId } = request.user;
+    const { possessions } = options;
+
+    // 超级管理员放行
+    if (userId === 1) return next();
+
+    const resourceIdParam = Object.keys(request.params)[0];
+    const resourceType = resourceIdParam.replace('Id', '');
+    const resourceId = parseInt(request.params[resourceIdParam], 10);
+
+    // 检查资源拥有权
+    if (possessions) {
+      try {
+        const ownResource = await possess({ resourceId, resourceType, userId });
+        if (!ownResource) {
+          return next(new Error('USER_DOES_NOT_OWN_RESOURCE'));
+        }
+      } catch (error) {
+        return next(error);
+      }
+    }
+
+    next();
+  };
 };

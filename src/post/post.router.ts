@@ -1,7 +1,7 @@
 import express from 'express';
 import * as postController from './post.controller';
 import { requestUrl } from '../app/app.middleware';
-import { authGuard } from '../auth/auth.middlerware';
+import { authGuard, accessControl } from '../auth/auth.middlerware';
 
 const router = express.Router();
 
@@ -18,11 +18,23 @@ router.post('/posts', requestUrl, authGuard, postController.store);
 /**
  * 更新内容
  */
-router.patch('/posts/:postId', requestUrl, postController.update);
+router.patch(
+  '/posts/:postId',
+  requestUrl,
+  authGuard, // 一定要先用 authGuard 验证登录状态，next 后，request 才有 user，才能进行访问控制
+  accessControl({ possessions: true }),
+  postController.update,
+);
 
 /**
  * 删除内容
  */
-router.delete('/posts/:postId', requestUrl, postController.destroy);
+router.delete(
+  '/posts/:postId',
+  requestUrl,
+  authGuard, // 一定要先用 authGuard 验证登录状态，next 后，request 才有 user，才能进行访问控制
+  accessControl({ possessions: true }),
+  postController.destroy,
+);
 
 export default router;
