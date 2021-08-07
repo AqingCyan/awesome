@@ -77,7 +77,6 @@ export const accessControl = (options: AccessControlOptions) => {
   return async (request: Request, response: Response, next: NextFunction) => {
     console.log('👮‍♀️ 访问控制');
 
-    // @ts-ignore
     const { id: userId } = request.user;
     const { possessions } = options;
 

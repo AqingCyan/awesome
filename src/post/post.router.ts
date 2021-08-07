@@ -48,4 +48,15 @@ router.post(
   postController.storePostTag,
 );
 
+/**
+ * 移除内容标签
+ */
+router.delete(
+  '/posts/:postId/tag',
+  requestUrl,
+  authGuard,
+  accessControl({ possessions: true }),
+  postController.destroyPostTag,
+);
+
 export default router;
