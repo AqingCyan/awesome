@@ -17,7 +17,7 @@ router.post(
 );
 
 /**
- * 文件服务
+ * 文件查询服务
  */
 router.get('/files/:fileId/serve', fileController.serve);
 
