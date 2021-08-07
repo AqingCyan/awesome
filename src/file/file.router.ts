@@ -21,4 +21,9 @@ router.post(
  */
 router.get('/files/:fileId/serve', fileController.serve);
 
+/**
+ * 文件信息
+ */
+router.get('/files/:fileId/metadata', fileController.matedata);
+
 export default router;

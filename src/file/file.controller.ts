@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import path from 'path';
 import _ from 'lodash';
 import { createFile, findFileById } from './file.service';
 
@@ -54,6 +53,27 @@ export const serve = async (
         'Content-Type': file.mimetype,
       },
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * 文件信息
+ */
+export const matedata = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  const { fileId } = request.params;
+
+  try {
+    const file = await findFileById(parseInt(fileId, 10));
+
+    const data = _.pick(file, ['id', 'size', 'width', 'height', 'metadata']);
+
+    response.send(data);
   } catch (error) {
     next(error);
   }
