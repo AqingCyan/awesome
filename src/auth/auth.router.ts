@@ -1,4 +1,3 @@
-// @ts-ignore
 import express from 'express';
 import * as authController from './auth.controller';
 import { authGuard, validateLoginData } from './auth.middlerware';

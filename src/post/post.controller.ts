@@ -1,7 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
 import _ from 'lodash';
 
-import { createPost, deletePost, getPosts, updatePost } from './post.service';
+import {
+  createPost,
+  deletePost,
+  getPosts,
+  updatePost,
+  createPostTag,
+  postHasTag,
+} from './post.service';
+import { createTag, getTagByName } from '../tag/tag.service';
+import { TagModel } from '../tag/tag.model';
 
 /**
  * 内容列表
@@ -72,5 +81,53 @@ export const destroy = async (
     response.send(data);
   } catch (error) {
     next(error);
+  }
+};
+
+/**
+ * 添加内容标签
+ */
+export const storePostTag = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  const { postId } = request.params;
+  const { name } = request.body;
+
+  let tag: TagModel;
+
+  // 查找标签
+  try {
+    tag = await getTagByName(name);
+  } catch (error) {
+    return next(error);
+  }
+
+  // 标签存在，验证内容标签
+  if (tag) {
+    try {
+      const postTag = await postHasTag(parseInt(postId, 10), tag.id);
+      if (postTag) return next(new Error('POST_ALREADY_HAS_THIS_TAG'));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  // 没找到标签，先创建
+  if (!tag) {
+    try {
+      const data = await createTag({ name });
+      tag = { id: data.insertId };
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  try {
+    await createPostTag(parseInt(postId, 10), tag.id);
+    response.sendStatus(201);
+  } catch (error) {
+    return next(error);
   }
 };

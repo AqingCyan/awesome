@@ -37,4 +37,15 @@ router.delete(
   postController.destroy,
 );
 
+/**
+ * 添加内容标签
+ */
+router.post(
+  '/posts/:postId/tag',
+  requestUrl,
+  authGuard,
+  accessControl({ possessions: true }),
+  postController.storePostTag,
+);
+
 export default router;
