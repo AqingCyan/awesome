@@ -47,6 +47,7 @@ export const getPosts = async (options: GetPostsOptions) => {
     ${sqlFragment.leftJoinUser}
     ${sqlFragment.leftJoinOneFile}
     ${sqlFragment.leftJoinTag}
+    ${filter.name === 'userLiked' ? sqlFragment.innerJoinUserLikePost : ''}
     WHERE ${filter.sql}
     GROUP BY post.id
     ORDER BY ${sort}
@@ -140,6 +141,7 @@ export const getPostsTotalCount = async (options: GetPostsOptions) => {
       ${sqlFragment.leftJoinUser}
       ${sqlFragment.leftJoinOneFile}
       ${sqlFragment.leftJoinTag}
+      ${filter.name === 'userLiked' ? sqlFragment.innerJoinUserLikePost : ''}
       WHERE ${filter.sql}
   `;
 
