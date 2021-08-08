@@ -22,3 +22,16 @@ export const isReplayComment = async (commentId: number) => {
 
   return !!data[0].parentId;
 };
+
+/**
+ * 修改评论
+ */
+export const updateComment = async (comment: CommentModel) => {
+  const { id, content } = comment;
+
+  const statement = `UPDATE comment SET content = ? WHERE id = ?`;
+
+  const [data] = await connection.promise().query(statement, [content, id]);
+
+  return data;
+};

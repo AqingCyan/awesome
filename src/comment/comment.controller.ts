@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { createComment, isReplayComment } from './comment.service';
+import {
+  createComment,
+  isReplayComment,
+  updateComment,
+} from './comment.service';
 
 /**
  * 发表评论
@@ -48,6 +52,28 @@ export const replay = async (
   try {
     const data = await createComment(comment);
     response.status(201).send(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * 修改评论
+ */
+export const update = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  const { commentId } = request.params;
+  const { content } = request.body;
+
+  const comment = { id: parseInt(commentId, 10), content };
+
+  try {
+    const data = await updateComment(comment);
+
+    response.send(data);
   } catch (error) {
     next(error);
   }
