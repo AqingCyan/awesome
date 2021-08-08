@@ -10,15 +10,24 @@ export interface GetPostsOptionsFilter {
   sql?: string;
   param?: string;
 }
+export interface GetPostsOptionsPagination {
+  limit: number;
+  offset: number;
+}
 interface GetPostsOptions {
   sort?: string;
   filter?: GetPostsOptionsFilter;
+  pagination?: GetPostsOptionsPagination;
 }
 export const getPosts = async (options: GetPostsOptions) => {
-  const { sort, filter } = options;
+  const {
+    sort,
+    filter,
+    pagination: { limit, offset },
+  } = options;
 
   // SQL 参数
-  let params: Array<any> = [];
+  let params: Array<any> = [limit, offset];
 
   if (filter.param) {
     params = [filter.param, ...params];
@@ -40,6 +49,8 @@ export const getPosts = async (options: GetPostsOptions) => {
     WHERE ${filter.sql}
     GROUP BY post.id
     ORDER BY ${sort}
+    LIMIT ?
+    OFFSET ?
   `;
 
   const [data] = await connection.promise().query(statement, params);
