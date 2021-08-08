@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
-import { Request, Response, NextFunction } from 'express';
 import _ from 'lodash';
+import { Request, Response, NextFunction } from 'express';
 import { createFile, findFileById } from './file.service';
 
 /**
@@ -30,7 +30,7 @@ export const store = async (
       ...request.fileMetaData,
     });
 
-    response.send(data);
+    response.status(201).send(data);
   } catch (error) {
     next(error);
   }

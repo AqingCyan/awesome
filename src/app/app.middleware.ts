@@ -69,6 +69,10 @@ export const defaultErrorHandler = (
       statusCode = 400;
       message = '内容已有该标签';
       break;
+    case 'UNABLE_TO_REPLAY_THIS_COMMENT':
+      statusCode = 400;
+      message = '无法回复该评论';
+      break;
     default:
       statusCode = 500;
       message = '服务暂时出了一些问题～～ 🌴';
