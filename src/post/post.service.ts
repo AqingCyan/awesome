@@ -123,3 +123,26 @@ export const deletePostTag = async (postId: number, tagId: number) => {
 
   return data;
 };
+
+/**
+ * 统计内容数量
+ */
+export const getPostsTotalCount = async (options: GetPostsOptions) => {
+  const { filter } = options;
+
+  let params = [filter.param];
+
+  const statement = `
+    SELECT
+      COUNT(DISTINCT post.id) AS total
+      FROM post
+      ${sqlFragment.leftJoinUser}
+      ${sqlFragment.leftJoinOneFile}
+      ${sqlFragment.leftJoinTag}
+      WHERE ${filter.sql}
+  `;
+
+  const [data] = await connection.promise().query(statement, params);
+
+  return data[0].total;
+};

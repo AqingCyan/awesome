@@ -9,6 +9,7 @@ import {
   createPostTag,
   postHasTag,
   deletePostTag,
+  getPostsTotalCount,
 } from './post.service';
 import { createTag, getTagByName } from '../tag/tag.service';
 import { TagModel } from '../tag/tag.model';
@@ -21,6 +22,15 @@ export const index = async (
   response: Response,
   next: NextFunction,
 ) => {
+  try {
+    // 统计一下符合条件的内容数量
+    const totalCount = await getPostsTotalCount({ filter: request.filter });
+
+    response.header('X-Total-Count', totalCount);
+  } catch (error) {
+    next(error);
+  }
+
   try {
     const posts = await getPosts({
       sort: request.sort,
