@@ -2,14 +2,14 @@ import express from 'express';
 import * as postController from './post.controller';
 import { requestUrl } from '../app/app.middleware';
 import { authGuard, accessControl } from '../auth/auth.middlerware';
-import { sort } from './post.middleware';
+import { sort, filter } from './post.middleware';
 
 const router = express.Router();
 
 /**
  * 内容列表
  */
-router.get('/posts', requestUrl, sort, postController.index);
+router.get('/posts', requestUrl, sort, filter, postController.index);
 
 /**
  * 创建内容
