@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import {
   createComment,
+  deleteComment,
   isReplayComment,
   updateComment,
 } from './comment.service';
@@ -73,6 +74,24 @@ export const update = async (
   try {
     const data = await updateComment(comment);
 
+    response.send(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * 删除评论
+ */
+export const destroyComment = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  const { commentId } = request.params;
+
+  try {
+    const data = await deleteComment(parseInt(commentId, 10));
     response.send(data);
   } catch (error) {
     next(error);
