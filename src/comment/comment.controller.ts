@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import {
   createComment,
   deleteComment,
+  getComments,
   isReplayComment,
   updateComment,
 } from './comment.service';
@@ -93,6 +94,23 @@ export const destroyComment = async (
   try {
     const data = await deleteComment(parseInt(commentId, 10));
     response.send(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * 评论列表
+ */
+export const index = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  try {
+    const comments = await getComments();
+
+    response.send(comments);
   } catch (error) {
     next(error);
   }

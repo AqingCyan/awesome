@@ -7,7 +7,7 @@ const router = express.Router();
 /**
  * 发表评论
  */
-router.post('/comment', authGuard, commentController.store);
+router.post('/comments', authGuard, commentController.store);
 
 /**
  * 回复评论
@@ -33,5 +33,10 @@ router.delete(
   accessControl({ possessions: true }),
   commentController.destroyComment,
 );
+
+/**
+ * 评论列表
+ */
+router.get('/comments', commentController.index);
 
 export default router;

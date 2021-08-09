@@ -1,5 +1,6 @@
 import { connection } from '../app/database/mysql';
 import { CommentModel } from './comment.model';
+import { sqlFragment } from './comment.provider';
 
 /**
  * 创建评论
@@ -43,6 +44,33 @@ export const deleteComment = async (commentId: number) => {
   const statement = `DELETE FROM comment WHERE id = ?`;
 
   const [data] = await connection.promise().query(statement, commentId);
+
+  return data;
+};
+
+/**
+ * 获取评论列表
+ */
+export const getComments = async () => {
+  let params: Array<any> = [];
+
+  const statement = `
+    SELECT
+      comment.id,
+      comment.content,
+      ${sqlFragment.user},
+      ${sqlFragment.post}
+    FROM
+      comment
+    ${sqlFragment.leftJoinUser}
+    ${sqlFragment.leftJoinPost}
+    GROUP BY
+      comment.id
+    ORDER BY
+      comment.id DESC
+  `;
+
+  const [data] = await connection.promise().query(statement, params);
 
   return data;
 };
