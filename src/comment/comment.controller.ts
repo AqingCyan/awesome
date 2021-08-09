@@ -108,7 +108,7 @@ export const index = async (
   next: NextFunction,
 ) => {
   try {
-    const comments = await getComments();
+    const comments = await getComments({ filter: request.filter });
 
     response.send(comments);
   } catch (error) {
