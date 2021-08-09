@@ -60,4 +60,9 @@ router.delete(
   postController.destroyPostTag,
 );
 
+/**
+ * 查询单个内容
+ */
+router.get('/posts/:postId', postController.show);
+
 export default router;

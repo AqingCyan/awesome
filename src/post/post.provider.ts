@@ -2,11 +2,12 @@
  * 查询片段
  */
 export const sqlFragment = {
-  user: `JSON_OBJECT(
-        'id', user.id,
-        'name', user.name,
-        'avatar', IF(COUNT(avatar.id), 1, NULL)
-      ) as user`,
+  user: `
+  JSON_OBJECT(
+    'id', user.id,
+    'name', user.name,
+    'avatar', IF(COUNT(avatar.id), 1, NULL)
+  ) as user`,
   leftJoinUser: `
     LEFT JOIN user
       ON user.id = post.userId
