@@ -9,4 +9,9 @@ const router = express.Router();
  */
 router.post('/users', validateUserData, hashPassword, userController.store);
 
+/**
+ * 用户账户
+ */
+router.get('/users/:userId', userController.show);
+
 export default router;
