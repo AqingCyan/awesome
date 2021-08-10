@@ -1,7 +1,10 @@
 import { connection } from '../app/database/mysql';
 import { CommentModel } from './comment.model';
 import { sqlFragment } from './comment.provider';
-import { GetPostsOptionsFilter } from '../post/post.service';
+import {
+  GetPostsOptionsFilter,
+  GetPostsOptionsPagination,
+} from '../post/post.service';
 
 /**
  * 创建评论
@@ -52,13 +55,17 @@ export const deleteComment = async (commentId: number) => {
 /**
  * 获取评论列表
  */
-interface GetCommentOptions {
+interface GetCommentsOptions {
   filter?: GetPostsOptionsFilter;
+  pagination?: GetPostsOptionsPagination;
 }
-export const getComments = async (options: GetCommentOptions) => {
-  const { filter } = options;
+export const getComments = async (options: GetCommentsOptions) => {
+  const {
+    filter,
+    pagination: { limit, offset },
+  } = options;
 
-  let params: Array<any> = [];
+  let params: Array<any> = [limit, offset];
 
   if (filter.param) {
     params = [filter.param, ...params];
@@ -82,9 +89,41 @@ export const getComments = async (options: GetCommentOptions) => {
       comment.id
     ORDER BY
       comment.id DESC
+    LIMIT ?
+    OFFSET ?
   `;
 
   const [data] = await connection.promise().query(statement, params);
 
   return data;
+};
+
+/**
+ * 统计评论数量
+ */
+export const getCommentsTotalCount = async (options: GetCommentsOptions) => {
+  const { filter } = options;
+
+  let params: Array<any> = [];
+
+  if (filter.param) {
+    params = [filter.param, ...params];
+  }
+
+  const statement = `
+    SELECT
+      COUNT(
+        DISTINCT comment.id
+      ) as total
+    FROM
+      comment
+    ${sqlFragment.leftJoinUser}
+    ${sqlFragment.leftJoinPost}
+    WHERE
+      ${filter.sql}
+  `;
+
+  const [data] = await connection.promise().query(statement, params);
+
+  return data[0].total;
 };

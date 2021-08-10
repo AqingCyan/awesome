@@ -2,6 +2,8 @@ import express from 'express';
 import * as commentController from './comment.controller';
 import { accessControl, authGuard } from '../auth/auth.middlerware';
 import { filter } from './comment.middleware';
+import { paginate } from '../post/post.middleware';
+import { COMMENT_PER_PAGE } from '../app/app.config';
 
 const router = express.Router();
 
@@ -38,6 +40,11 @@ router.delete(
 /**
  * 评论列表
  */
-router.get('/comments', filter, commentController.index);
+router.get(
+  '/comments',
+  filter,
+  paginate(COMMENT_PER_PAGE),
+  commentController.index,
+);
 
 export default router;
