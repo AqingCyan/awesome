@@ -47,4 +47,9 @@ router.get(
   commentController.index,
 );
 
+/**
+ * 回复列表
+ */
+router.get('/comments/:commentId/replies', commentController.indexReplies);
+
 export default router;
