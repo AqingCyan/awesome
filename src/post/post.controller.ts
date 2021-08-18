@@ -14,6 +14,7 @@ import {
 } from './post.service';
 import { createTag, getTagByName } from '../tag/tag.service';
 import { TagModel } from '../tag/tag.model';
+import { deletePostFiles, getPostFiles } from '../file/file.service';
 
 /**
  * 内容列表
@@ -78,6 +79,12 @@ export const destroy = async (request: Request, response: Response, next: NextFu
   const { postId } = request.params;
 
   try {
+    const files = await getPostFiles(parseInt(postId, 10));
+
+    if (files.length) {
+      await deletePostFiles(files);
+    }
+
     const data = await deletePost(parseInt(postId));
     response.send(data);
   } catch (error) {
