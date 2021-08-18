@@ -5,11 +5,7 @@ import * as userService from './user.service';
 /**
  * 创建用户
  */
-export const store = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const store = async (request: Request, response: Response, next: NextFunction) => {
   const { name, password } = request.body;
 
   try {
@@ -23,11 +19,7 @@ export const store = async (
 /**
  * 用户账户
  */
-export const show = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const show = async (request: Request, response: Response, next: NextFunction) => {
   const { userId } = request.params;
 
   try {
@@ -46,11 +38,7 @@ export const show = async (
 /**
  * 更新用户
  */
-export const update = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const update = async (request: Request, response: Response, next: NextFunction) => {
   const { id } = request.user;
   const userData = _.pick(request.body.update, ['name', 'password']);
 

@@ -1,10 +1,7 @@
 import { connection } from '../app/database/mysql';
 import { CommentModel } from './comment.model';
 import { sqlFragment } from './comment.provider';
-import {
-  GetPostsOptionsFilter,
-  GetPostsOptionsPagination,
-} from '../post/post.service';
+import { GetPostsOptionsFilter, GetPostsOptionsPagination } from '../post/post.service';
 
 /**
  * 创建评论

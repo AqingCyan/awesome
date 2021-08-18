@@ -4,11 +4,7 @@ import { signToken } from './auth.service';
 /**
  * 用户登录
  */
-export const login = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const login = async (request: Request, response: Response, next: NextFunction) => {
   const {
     user: { id, name },
   } = request.body;
@@ -26,12 +22,7 @@ export const login = async (
 /**
  * 验证登录
  */
-export const validate = (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
-  // @ts-ignore
+export const validate = (request: Request, response: Response, next: NextFunction) => {
   console.log(request.user);
   response.sendStatus(200);
 };

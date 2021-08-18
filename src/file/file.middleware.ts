@@ -7,11 +7,7 @@ import { imageResizer } from './file.service';
  * 文件过滤器
  */
 export const fileFilter = (fileTypes: Array<string>) => {
-  return (
-    request: Request,
-    file: Express.Multer.File,
-    callback: FileFilterCallback,
-  ) => {
+  return (request: Request, file: Express.Multer.File, callback: FileFilterCallback) => {
     // 测试文件类型
     const allowed = fileTypes.some((type) => type === file.mimetype);
 
@@ -42,11 +38,7 @@ export const fileInterceptor = fileUpload.single('file');
 /**
  * 文件处理器
  */
-export const fileProcessor = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const fileProcessor = async (request: Request, response: Response, next: NextFunction) => {
   const { path } = request.file;
 
   let image: Jimp;

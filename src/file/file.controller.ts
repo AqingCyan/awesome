@@ -7,20 +7,11 @@ import { createFile, findFileById } from './file.service';
 /**
  * 上传文件
  */
-export const store = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const store = async (request: Request, response: Response, next: NextFunction) => {
   const { id: userId } = request.user;
   const { post: postId } = request.query;
 
-  const fileInfo = _.pick(request.file, [
-    'originalname',
-    'mimetype',
-    'filename',
-    'size',
-  ]);
+  const fileInfo = _.pick(request.file, ['originalname', 'mimetype', 'filename', 'size']);
 
   try {
     const data = await createFile({
@@ -39,11 +30,7 @@ export const store = async (
 /**
  * 文件查询服务
  */
-export const serve = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const serve = async (request: Request, response: Response, next: NextFunction) => {
   const { fileId } = request.params;
 
   try {
@@ -67,9 +54,7 @@ export const serve = async (
       }
 
       // 检查文件是否存在
-      const fileExist = fs.existsSync(
-        path.join(root, resized, `${filename}-${size}`),
-      );
+      const fileExist = fs.existsSync(path.join(root, resized, `${filename}-${size}`));
 
       if (fileExist) {
         filename = `${filename}-${size}`;
@@ -91,11 +76,7 @@ export const serve = async (
 /**
  * 文件信息
  */
-export const matedata = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const matedata = async (request: Request, response: Response, next: NextFunction) => {
   const { fileId } = request.params;
 
   try {

@@ -38,18 +38,14 @@ describe('测试用户模块接口', () => {
    */
   describe('测试创建用户接口', () => {
     test('创建用户时必须提供用户名', async () => {
-      const response = await request(app)
-        .post('/users')
-        .send({ password: testUser.password });
+      const response = await request(app).post('/users').send({ password: testUser.password });
 
       expect(response.status).toBe(400);
       expect(response.body).toEqual({ message: '请提供用户名' });
     });
 
     test('创建用户时必须提供密码', async () => {
-      const response = await request(app)
-        .post('/users')
-        .send({ name: testUser.name });
+      const response = await request(app).post('/users').send({ name: testUser.name });
 
       expect(response.status).toBe(400);
       expect(response.body).toEqual({ message: '请提供用户密码' });
@@ -119,10 +115,7 @@ describe('测试用户模块接口', () => {
 
       const user = await getUserById(testUserCreated.id, { password: true });
 
-      const matched = await bcrypt.compare(
-        testUserUpdated.password,
-        user.password,
-      );
+      const matched = await bcrypt.compare(testUserUpdated.password, user.password);
 
       expect(response.status).toBe(200);
       expect(matched).toBeTruthy();

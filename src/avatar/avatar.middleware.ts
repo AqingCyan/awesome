@@ -25,11 +25,7 @@ export const avatarInterceptor = avatarUpload.single('avatar');
 /**
  * 处理头像尺寸
  */
-export const avatarProcessor = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const avatarProcessor = async (request: Request, response: Response, next: NextFunction) => {
   const { file } = request;
 
   const filePath = path.join(file.destination, 'resized', file.filename);

@@ -14,15 +14,12 @@ import {
 } from './post.service';
 import { createTag, getTagByName } from '../tag/tag.service';
 import { TagModel } from '../tag/tag.model';
+import { deletePostFiles, getPostFiles } from '../file/file.service';
 
 /**
  * 内容列表
  */
-export const index = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const index = async (request: Request, response: Response, next: NextFunction) => {
   try {
     // 统计一下符合条件的内容数量
     const totalCount = await getPostsTotalCount({ filter: request.filter });
@@ -37,6 +34,7 @@ export const index = async (
       sort: request.sort,
       filter: request.filter,
       pagination: request.pagination,
+      currentUser: request.user,
     });
     response.send(posts);
   } catch (error) {
@@ -47,11 +45,7 @@ export const index = async (
 /**
  * 创建内容
  */
-export const store = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const store = async (request: Request, response: Response, next: NextFunction) => {
   const { title, content } = request.body;
   const { id: userId } = request.user;
 
@@ -66,11 +60,7 @@ export const store = async (
 /**
  * 更新内容
  */
-export const update = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const update = async (request: Request, response: Response, next: NextFunction) => {
   const { postId } = request.params;
   const post = _.pick(request.body, ['title', 'content']);
 
@@ -85,14 +75,16 @@ export const update = async (
 /**
  * 删除内容
  */
-export const destroy = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const destroy = async (request: Request, response: Response, next: NextFunction) => {
   const { postId } = request.params;
 
   try {
+    const files = await getPostFiles(parseInt(postId, 10));
+
+    if (files.length) {
+      await deletePostFiles(files);
+    }
+
     const data = await deletePost(parseInt(postId));
     response.send(data);
   } catch (error) {
@@ -103,11 +95,7 @@ export const destroy = async (
 /**
  * 添加内容标签
  */
-export const storePostTag = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const storePostTag = async (request: Request, response: Response, next: NextFunction) => {
   const { postId } = request.params;
   const { name } = request.body;
 
@@ -151,11 +139,7 @@ export const storePostTag = async (
 /**
  * 移除内容标签
  */
-export const destroyPostTag = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const destroyPostTag = async (request: Request, response: Response, next: NextFunction) => {
   const { postId } = request.params;
   const { tagId } = request.body;
 
@@ -170,15 +154,11 @@ export const destroyPostTag = async (
 /**
  * 查询单个内容
  */
-export const show = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const show = async (request: Request, response: Response, next: NextFunction) => {
   const { postId } = request.params;
 
   try {
-    const post = await getPostById(parseInt(postId, 10));
+    const post = await getPostById(parseInt(postId, 10), { currentUser: request.user });
     response.send(post);
   } catch (error) {
     next(error);

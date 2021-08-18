@@ -11,6 +11,7 @@ import avatarRouter from '../avatar/avatar.router';
 import likeRouter from '../like/like.router';
 import appRouter from './app.router';
 import { ALLOW_ORIGIN } from './app.config';
+import { currentUser } from '../auth/auth.middlerware';
 
 /**
  * 创建应用
@@ -31,6 +32,11 @@ app.use(
  * 全局处理 JSON
  */
 app.use(express.json());
+
+/**
+ * 识别当前用户
+ */
+app.use(currentUser);
 
 /**
  * 路由

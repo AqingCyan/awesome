@@ -31,9 +31,7 @@ describe('演示接口测试', () => {
   });
 
   test('测试 POST /', async () => {
-    const response = await request(app)
-      .post('/echo')
-      .send({ message: 'Hello～' });
+    const response = await request(app).post('/echo').send({ message: 'Hello～' });
 
     expect(response.status).toBe(201);
     expect(response.body).toEqual({ message: 'Hello～' });
