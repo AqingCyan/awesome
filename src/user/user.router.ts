@@ -1,10 +1,6 @@
 import express from 'express';
 import * as userController from './user.controller';
-import {
-  validateUserData,
-  hashPassword,
-  validateUpdateUserData,
-} from './user.middleware';
+import { validateUserData, hashPassword, validateUpdateUserData } from './user.middleware';
 import { authGuard } from '../auth/auth.middlerware';
 
 const router = express.Router();
@@ -22,11 +18,6 @@ router.get('/users/:userId', userController.show);
 /**
  * 更新用户
  */
-router.patch(
-  '/users',
-  authGuard,
-  validateUpdateUserData,
-  userController.update,
-);
+router.patch('/users', authGuard, validateUpdateUserData, userController.update);
 
 export default router;

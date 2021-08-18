@@ -28,11 +28,7 @@ export const validateUserData = async (
 /**
  * HASH密码
  */
-export const hashPassword = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const hashPassword = async (request: Request, response: Response, next: NextFunction) => {
   const { password } = request.body;
 
   request.body.password = await bcrypt.hash(password, 10);

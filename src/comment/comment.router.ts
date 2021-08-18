@@ -40,12 +40,7 @@ router.delete(
 /**
  * 评论列表
  */
-router.get(
-  '/comments',
-  filter,
-  paginate(COMMENT_PER_PAGE),
-  commentController.index,
-);
+router.get('/comments', filter, paginate(COMMENT_PER_PAGE), commentController.index);
 
 /**
  * 回复列表

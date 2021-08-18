@@ -38,11 +38,7 @@ export const validateLoginData = async (
 /**
  * 验证用户身份
  */
-export const authGuard = (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const authGuard = (request: Request, response: Response, next: NextFunction) => {
   console.log('👮‍♀️ 验证用户身份');
 
   if (request.user.id) {
@@ -55,11 +51,7 @@ export const authGuard = (
 /**
  * 识别当前用户
  */
-export const currentUser = (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const currentUser = (request: Request, response: Response, next: NextFunction) => {
   console.log('👓 识别当前用户');
 
   let user: TokenPayload = {

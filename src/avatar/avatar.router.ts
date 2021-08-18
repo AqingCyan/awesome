@@ -8,13 +8,7 @@ const router = express.Router();
 /**
  * 上传头像
  */
-router.post(
-  '/avatar',
-  authGuard,
-  avatarInterceptor,
-  avatarProcessor,
-  avatarController.store,
-);
+router.post('/avatar', authGuard, avatarInterceptor, avatarProcessor, avatarController.store);
 
 /**
  * 头像查询服务
