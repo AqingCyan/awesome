@@ -45,26 +45,47 @@ export const authGuard = (
 ) => {
   console.log('👮‍♀️ 验证用户身份');
 
+  if (request.user.id) {
+    next();
+  } else {
+    next(new Error('UNAUTHORIZED'));
+  }
+};
+
+/**
+ * 识别当前用户
+ */
+export const currentUser = (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  console.log('👓 识别当前用户');
+
+  let user: TokenPayload = {
+    id: null,
+    name: 'anonymous',
+  };
+
   try {
     const authorization = request.header('Authorization');
-    if (!authorization) throw new Error();
 
     // 提取JWT令牌
     const token = authorization.replace('Bearer ', '');
-    if (!token) throw new Error();
 
-    const decoded = jwt.verify(token, PUBLIC_KEY, {
-      algorithms: ['RS256'],
-    });
+    if (token) {
+      const decoded = jwt.verify(token, PUBLIC_KEY, {
+        algorithms: ['RS256'],
+      });
 
-    // 在请求添加user
-    // @ts-ignore
-    request.user = decoded as TokenPayload;
+      user = decoded as TokenPayload;
+    }
+  } catch (e) {}
 
-    next();
-  } catch (e) {
-    next(new Error('UNAUTHORIZED'));
-  }
+  // 在请求添加user
+  request.user = user;
+
+  next();
 };
 
 /**

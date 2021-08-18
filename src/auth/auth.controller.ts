@@ -31,7 +31,6 @@ export const validate = (
   response: Response,
   next: NextFunction,
 ) => {
-  // @ts-ignore
   console.log(request.user);
   response.sendStatus(200);
 };
