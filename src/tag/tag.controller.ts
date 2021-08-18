@@ -4,11 +4,7 @@ import { createTag, getTagByName } from './tag.service';
 /**
  * 创建标签
  */
-export const store = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const store = async (request: Request, response: Response, next: NextFunction) => {
   const { name } = request.body;
 
   try {

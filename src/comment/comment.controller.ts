@@ -12,11 +12,7 @@ import {
 /**
  * 发表评论
  */
-export const store = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const store = async (request: Request, response: Response, next: NextFunction) => {
   const { id: userId } = request.user;
   const { content, postId } = request.body;
 
@@ -33,11 +29,7 @@ export const store = async (
 /**
  * 回复评论
  */
-export const replay = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const replay = async (request: Request, response: Response, next: NextFunction) => {
   const { commentId } = request.params;
   const parentId = parseInt(commentId, 10);
   const { id: userId } = request.user;
@@ -64,11 +56,7 @@ export const replay = async (
 /**
  * 修改评论
  */
-export const update = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const update = async (request: Request, response: Response, next: NextFunction) => {
   const { commentId } = request.params;
   const { content } = request.body;
 
@@ -86,11 +74,7 @@ export const update = async (
 /**
  * 删除评论
  */
-export const destroyComment = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const destroyComment = async (request: Request, response: Response, next: NextFunction) => {
   const { commentId } = request.params;
 
   try {
@@ -104,11 +88,7 @@ export const destroyComment = async (
 /**
  * 评论列表
  */
-export const index = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const index = async (request: Request, response: Response, next: NextFunction) => {
   // 统计评论数量
   try {
     const totalCount = await getCommentsTotalCount({ filter: request.filter });
@@ -133,11 +113,7 @@ export const index = async (
 /**
  * 获取评论回复
  */
-export const indexReplies = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const indexReplies = async (request: Request, response: Response, next: NextFunction) => {
   const { commentId } = request.params;
 
   try {

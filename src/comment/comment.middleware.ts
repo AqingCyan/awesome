@@ -3,11 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 /**
  * 评论过滤器
  */
-export const filter = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const filter = async (request: Request, response: Response, next: NextFunction) => {
   const { post, user, action } = request.query;
 
   // 默认获取不是回复类型的评论

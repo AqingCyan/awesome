@@ -12,10 +12,6 @@ router.post('/posts/:postId/like', authGuard, likeController.storeUserLikePost);
 /**
  * 取消点赞内容
  */
-router.delete(
-  '/posts/:postId/like',
-  authGuard,
-  likeController.destroyUserLikePost,
-);
+router.delete('/posts/:postId/like', authGuard, likeController.destroyUserLikePost);
 
 export default router;

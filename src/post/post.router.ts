@@ -10,14 +10,7 @@ const router = express.Router();
 /**
  * 内容列表
  */
-router.get(
-  '/posts',
-  requestUrl,
-  sort,
-  filter,
-  paginate(POSTS_PER_PAGE),
-  postController.index,
-);
+router.get('/posts', requestUrl, sort, filter, paginate(POSTS_PER_PAGE), postController.index);
 
 /**
  * 创建内容

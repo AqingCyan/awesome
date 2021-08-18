@@ -7,11 +7,7 @@ import { createAvatar, findAvatarByUserId } from './avatar.service';
 /**
  * 上传头像
  */
-export const store = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const store = async (request: Request, response: Response, next: NextFunction) => {
   const { id: userId } = request.user;
 
   const fileInfo = _.pick(request.file, ['mimetype', 'filename', 'size']);
@@ -29,11 +25,7 @@ export const store = async (
 /**
  * 头像查询服务
  */
-export const serve = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
+export const serve = async (request: Request, response: Response, next: NextFunction) => {
   const { userId } = request.params;
 
   try {
@@ -57,9 +49,7 @@ export const serve = async (
         throw new Error('FILE_NOT_FOUND');
       }
 
-      const fileExist = fs.existsSync(
-        path.join(root, resized, `${filename}-${size}`),
-      );
+      const fileExist = fs.existsSync(path.join(root, resized, `${filename}-${size}`));
 
       if (!fileExist) {
         throw new Error('FILE_NOT_FOUND');

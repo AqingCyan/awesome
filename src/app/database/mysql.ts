@@ -1,11 +1,5 @@
 import mysql from 'mysql2';
-import {
-  MYSQL_HOST,
-  MYSQL_PORT,
-  MYSQL_USER,
-  MYSQL_PASSWORD,
-  MYSQL_DATABASE,
-} from '../app.config';
+import { MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE } from '../app.config';
 
 /**
  * 创建数据库服务连接

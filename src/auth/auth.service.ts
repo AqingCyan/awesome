@@ -29,9 +29,7 @@ export const possess = async (options: PossessOptions) => {
 
   const statement = `SELECT COUNT(${resourceType}.id) as count FROM ${resourceType} WHERE ${resourceType}.id = ? AND userId = ?`;
 
-  const [data] = await connection
-    .promise()
-    .query(statement, [resourceId, userId]);
+  const [data] = await connection.promise().query(statement, [resourceId, userId]);
 
   return !!data[0].count;
 };
