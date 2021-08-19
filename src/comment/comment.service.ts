@@ -11,7 +11,7 @@ export const createComment = async (comment: CommentModel) => {
 
   const [data] = await connection.promise().query(statement, comment);
 
-  return data;
+  return data as any;
 };
 
 /**
@@ -151,4 +151,37 @@ export const getCommentReplies = async (options: GetCommentRepliesOptions) => {
   const [data] = await connection.promise().query(statement, commentId);
 
   return data;
+};
+
+/**
+ * 按ID调取评论或回复
+ */
+interface GetCommentsByIdOptions {
+  resourceType?: string;
+}
+export const getCommentById = async (commentId: number, options: GetCommentsByIdOptions = {}) => {
+  const { resourceType = 'comment' } = options;
+
+  // SQL 参数
+  const params: Array<any> = [commentId];
+
+  const statement = `
+    SELECT
+      comment.id,
+      comment.content,
+      ${sqlFragment.user},
+      ${sqlFragment.post},
+      ${resourceType === 'replay' ? `, ${sqlFragment.repliedComment}` : ''}
+      ${resourceType === 'comment' ? `, ${sqlFragment.totalReplies}` : ''}
+    FROM
+      comment
+    ${sqlFragment.leftJoinUser}
+    ${sqlFragment.leftJoinPost}
+    WHERE
+      comment.id = ?
+  `;
+
+  const [data] = await connection.promise().query(statement, params);
+
+  return data[0] as any;
 };
