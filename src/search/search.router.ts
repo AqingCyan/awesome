@@ -13,4 +13,14 @@ router.get('/search/tags', searchController.tags);
  */
 router.get('/search/users', searchController.users);
 
+/**
+ * 搜索相机
+ */
+router.get('/search/cameras', searchController.cameras);
+
+/**
+ * 搜索镜头
+ */
+router.get('/search/lens', searchController.lens);
+
 export default router;

@@ -74,3 +74,69 @@ export const searchUsers = async (options: SearchUserOptions) => {
 
   return data as any;
 };
+
+/**
+ * 搜索相机
+ */
+interface SearchCamerasOptions {
+  makeModel?: string;
+}
+export const searchCameras = async (options: SearchCamerasOptions) => {
+  const { makeModel } = options;
+
+  const params: Array<any> = [`%${makeModel}%`];
+
+  // 品牌与型号
+  const makeModelField = `JSON_EXTRACT(file.metadata, "$.Make", "$.Model")`;
+
+  const statement = `
+    SELECT
+      ${makeModelField} as camera,
+      COUNT(${makeModelField}) as totalPosts
+    FROM
+      file
+    WHERE
+      ${makeModelField} LIKE ? COLLATE utf8mb4_unicode_ci
+    GROUP BY
+      ${makeModelField}
+    LIMIT
+      10
+  `;
+
+  const [data] = await connection.promise().query(statement, params);
+
+  return data as any;
+};
+
+/**
+ * 搜索相机
+ */
+interface SearchLensOptions {
+  makeModel?: string;
+}
+export const searchLens = async (options: SearchLensOptions) => {
+  const { makeModel } = options;
+
+  const params: Array<any> = [`%${makeModel}%`];
+
+  // 镜头
+  const makeModelField = `JSON_EXTRACT(file.metadata, "$.LensMake", "$.LensModel")`;
+
+  const statement = `
+    SELECT
+      ${makeModelField} as lens,
+      COUNT(${makeModelField}) as totalPosts
+    FROM
+      file
+    WHERE
+      ${makeModelField} LIKE ? COLLATE utf8mb4_unicode_ci
+    GROUP BY
+      ${makeModelField}
+    LIMIT
+      10
+  `;
+
+  const [data] = await connection.promise().query(statement, params);
+
+  return data as any;
+};

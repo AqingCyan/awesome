@@ -32,7 +32,7 @@ export const sort = async (request: Request, response: Response, next: NextFunct
  * 过滤列表
  */
 export const filter = async (request: Request, response: Response, next: NextFunction) => {
-  const { tag, user, action } = request.query;
+  const { tag, user, action, cameraMake, cameraModel, lensMake, lensModel } = request.query;
 
   // 设置默认过滤
   request.filter = {
@@ -67,23 +67,44 @@ export const filter = async (request: Request, response: Response, next: NextFun
     };
   }
 
+  // 过滤出某种相机拍摄的内容
+  if (cameraMake && cameraModel) {
+    request.filter = {
+      name: 'camera',
+      sql: `file.metadata->'$.Make' = ? AND file.metadata->'$.Model' = ?`,
+      params: [cameraMake as string, cameraModel as string],
+    };
+  }
+
+  // 过滤出某种镜头拍摄的内容
+  if (lensMake && lensModel) {
+    request.filter = {
+      name: 'lens',
+      sql: `file.metadata->'$.LensMake' = ? AND file.metadata->'$.LensModel' = ?`,
+      params: [lensMake as string, lensModel as string],
+    };
+  }
+
   next();
 };
 
 /**
  * 内容分页
  */
-export const paginate =
-  (itemsPerPage: number) => async (request: Request, response: Response, next: NextFunction) => {
-    // 当前页码
-    const { page = '1' } = request.query;
+export const paginate = (itemsPerPage: number) => async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  // 当前页码
+  const { page = '1' } = request.query;
 
-    const limit = itemsPerPage || 30;
+  const limit = itemsPerPage || 30;
 
-    // 计算偏移量
-    const offset = limit * (parseInt(page as string, 10) - 1);
+  // 计算偏移量
+  const offset = limit * (parseInt(page as string, 10) - 1);
 
-    request.pagination = { limit, offset };
+  request.pagination = { limit, offset };
 
-    next();
-  };
+  next();
+};
