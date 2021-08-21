@@ -2,7 +2,7 @@ import express from 'express';
 import * as postController from './post.controller';
 import { requestUrl } from '../app/app.middleware';
 import { authGuard, accessControl } from '../auth/auth.middlerware';
-import { sort, filter, paginate } from './post.middleware';
+import { sort, filter, paginate, validatePostStatus } from './post.middleware';
 import { POSTS_PER_PAGE } from '../app/app.config';
 
 const router = express.Router();
@@ -10,7 +10,15 @@ const router = express.Router();
 /**
  * 内容列表
  */
-router.get('/posts', requestUrl, sort, filter, paginate(POSTS_PER_PAGE), postController.index);
+router.get(
+  '/posts',
+  requestUrl,
+  sort,
+  filter,
+  paginate(POSTS_PER_PAGE),
+  validatePostStatus,
+  postController.index,
+);
 
 /**
  * 创建内容

@@ -108,3 +108,23 @@ export const paginate = (itemsPerPage: number) => async (
 
   next();
 };
+
+/**
+ * 验证内容状态
+ */
+export const validatePostStatus = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  const { status = '' } = request.query;
+
+  // 检查内容状态是否有效
+  const isValidStatus = ['published', 'draft', 'archived', ''].includes(status as string);
+
+  if (!isValidStatus) {
+    next(new Error('BAD_REQUEST'));
+  } else {
+    next();
+  }
+};
