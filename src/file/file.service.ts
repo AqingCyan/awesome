@@ -3,6 +3,8 @@ import path from 'path';
 import Jimp from 'jimp';
 import { connection } from '../app/database/mysql';
 import { FileModel } from './file.model';
+import { TokenPayload } from '../auth/auth.interface';
+import { getPostById, PostStatus } from '../post/post.service';
 
 /**
  * 存储文件信息
@@ -22,6 +24,10 @@ export const findFileById = async (fileId: number) => {
   const statement = `SELECT * FROM file WHERE id = ?`;
 
   const [data] = await connection.promise().query(statement, fileId);
+
+  if (!data[0] || !data[0].id) {
+    throw new Error('NOT_FOUND');
+  }
 
   return data[0];
 };
@@ -95,4 +101,24 @@ export const deletePostFiles = async (files: Array<FileModel>) => {
       });
     });
   });
+};
+
+/**
+ * 检查文件权限
+ */
+interface FileAccessControlOptions {
+  file: FileModel;
+  currentUser: TokenPayload;
+}
+export const fileAccessControl = async (options: FileAccessControlOptions) => {
+  const { file, currentUser } = options;
+  const ownFile = file.userId === currentUser.id;
+  const isAdmin = currentUser.id === 1;
+  const parentPost = await getPostById(file.postId, { currentUser });
+  const isPublished = parentPost.status === PostStatus.published;
+  const canAccess = ownFile || isAdmin || isPublished;
+
+  if (!canAccess) {
+    throw new Error('FORBIDDEN');
+  }
 };

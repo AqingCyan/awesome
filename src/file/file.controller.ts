@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import _ from 'lodash';
 import { Request, Response, NextFunction } from 'express';
-import { createFile, findFileById } from './file.service';
+import { createFile, fileAccessControl, findFileById } from './file.service';
 
 /**
  * 上传文件
@@ -33,8 +33,15 @@ export const store = async (request: Request, response: Response, next: NextFunc
 export const serve = async (request: Request, response: Response, next: NextFunction) => {
   const { fileId } = request.params;
 
+  // 当前用户
+  const { user: currentUser } = request;
+
   try {
+    // 查找文件信息
     const file = await findFileById(parseInt(fileId, 10));
+
+    // 检查权限
+    await fileAccessControl({ file, currentUser });
 
     // 要提供的图像尺寸
     const { size } = await request.query;
@@ -79,9 +86,15 @@ export const serve = async (request: Request, response: Response, next: NextFunc
 export const matedata = async (request: Request, response: Response, next: NextFunction) => {
   const { fileId } = request.params;
 
+  // 当前用户
+  const { user: currentUser } = request;
+
   try {
     // 查找文件信息
     const file = await findFileById(parseInt(fileId, 10));
+
+    // 检查权限
+    await fileAccessControl({ file, currentUser });
 
     const data = _.pick(file, ['id', 'size', 'width', 'height', 'metadata']);
 

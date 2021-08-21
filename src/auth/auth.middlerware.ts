@@ -74,6 +74,8 @@ export const currentUser = (request: Request, response: Response, next: NextFunc
     }
   } catch (e) {}
 
+  console.log('user is: ', user);
+
   // 在请求添加user
   request.user = user;
 
