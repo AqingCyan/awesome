@@ -11,10 +11,12 @@ import {
   deletePostTag,
   getPostsTotalCount,
   getPostById,
+  PostStatus,
 } from './post.service';
 import { createTag, getTagByName } from '../tag/tag.service';
 import { TagModel } from '../tag/tag.model';
 import { deletePostFiles, getPostFiles } from '../file/file.service';
+import { PostModel } from './post.model';
 
 /**
  * 内容列表
@@ -53,11 +55,13 @@ export const index = async (request: Request, response: Response, next: NextFunc
  * 创建内容
  */
 export const store = async (request: Request, response: Response, next: NextFunction) => {
-  const { title, content } = request.body;
+  const { title, content, status = PostStatus.draft } = request.body;
   const { id: userId } = request.user;
 
+  const post: PostModel = { title, content, userId, status };
+
   try {
-    const data = await createPost({ title, content, userId });
+    const data = await createPost(post);
     response.status(201).send(data);
   } catch (error) {
     next(error);
@@ -69,7 +73,7 @@ export const store = async (request: Request, response: Response, next: NextFunc
  */
 export const update = async (request: Request, response: Response, next: NextFunction) => {
   const { postId } = request.params;
-  const post = _.pick(request.body, ['title', 'content']);
+  const post = _.pick(request.body, ['title', 'content', 'status']);
 
   try {
     const data = await updatePost(parseInt(postId), post);

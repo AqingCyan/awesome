@@ -24,7 +24,7 @@ router.get(
 /**
  * 创建内容
  */
-router.post('/posts', requestUrl, authGuard, postController.store);
+router.post('/posts', requestUrl, authGuard, validatePostStatus, postController.store);
 
 /**
  * 更新内容
@@ -34,6 +34,7 @@ router.patch(
   requestUrl,
   authGuard, // 一定要先用 authGuard 验证登录状态，next 后，request 才有 user，才能进行访问控制
   accessControl({ possessions: true }),
+  validatePostStatus,
   postController.update,
 );
 
