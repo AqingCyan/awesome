@@ -220,6 +220,7 @@ export const getPostById = async (postId: number, options: GetPostByIdOptions = 
       ${sqlFragment.file},
       ${sqlFragment.tags},
       ${sqlFragment.totalLikes},
+      ${sqlFragment.audit},
       (
         SELECT COUNT(user_like_post.postId)
         FROM user_like_post
@@ -231,6 +232,7 @@ export const getPostById = async (postId: number, options: GetPostByIdOptions = 
     ${sqlFragment.leftJoinUser}
     ${sqlFragment.leftJoinOneFile}
     ${sqlFragment.leftJoinTag}
+    ${sqlFragment.leftJoinOneAuditLog}
     WHERE post.id = ?
   `;
 

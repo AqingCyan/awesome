@@ -5,6 +5,8 @@ import { connection } from '../app/database/mysql';
 import { FileModel } from './file.model';
 import { TokenPayload } from '../auth/auth.interface';
 import { getPostById, PostStatus } from '../post/post.service';
+import { getAuditLogByResource } from '../audit-log/audit-log.service';
+import { AuditLogStatus } from '../audit-log/audit-log.model';
 
 /**
  * 存储文件信息
@@ -112,11 +114,20 @@ interface FileAccessControlOptions {
 }
 export const fileAccessControl = async (options: FileAccessControlOptions) => {
   const { file, currentUser } = options;
+
+  // 权限判断
   const ownFile = file.userId === currentUser.id;
   const isAdmin = currentUser.id === 1;
   const parentPost = await getPostById(file.postId, { currentUser });
+
+  const [parentPostsAuditLog] = await getAuditLogByResource({
+    resourceId: file.postId,
+    resourceType: 'post',
+  });
+  const isApproved = parentPostsAuditLog && parentPostsAuditLog.status === AuditLogStatus.approved;
+
   const isPublished = parentPost.status === PostStatus.published;
-  const canAccess = ownFile || isAdmin || isPublished;
+  const canAccess = ownFile || isAdmin || (isPublished && isApproved);
 
   if (!canAccess) {
     throw new Error('FORBIDDEN');

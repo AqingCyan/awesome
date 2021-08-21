@@ -1,22 +1,24 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import _ from 'lodash';
 
 import {
   createPost,
-  deletePost,
-  getPosts,
-  updatePost,
   createPostTag,
-  postHasTag,
+  deletePost,
   deletePostTag,
-  getPostsTotalCount,
   getPostById,
+  getPosts,
+  getPostsTotalCount,
+  postHasTag,
   PostStatus,
+  updatePost,
 } from './post.service';
 import { createTag, getTagByName } from '../tag/tag.service';
 import { TagModel } from '../tag/tag.model';
 import { deletePostFiles, getPostFiles } from '../file/file.service';
 import { PostModel } from './post.model';
+import { getAuditLogByResource } from '../audit-log/audit-log.service';
+import { AuditLogStatus } from '../audit-log/audit-log.model';
 
 /**
  * 内容列表
@@ -174,11 +176,18 @@ export const show = async (request: Request, response: Response, next: NextFunct
   try {
     const post = await getPostById(parseInt(postId, 10), { currentUser: request.user });
 
+    // 审核日志
+    const [auditLog] = await getAuditLogByResource({
+      resourceId: parseInt(postId, 10),
+      resourceType: 'post',
+    });
+
     // 检查权限，获取发布内容时，如果内容未发布，用户也不是管理员，也不是内容所有者，那就不允许访问
     const ownPost = post.user.id === currentUser.id;
     const isAdmin = currentUser.id === 1;
     const isPublished = post.status === PostStatus.published;
-    const canAccess = isAdmin || ownPost || isPublished;
+    const isApproved = auditLog && auditLog.status === AuditLogStatus.approved;
+    const canAccess = isAdmin || ownPost || (isPublished && isApproved);
 
     if (!canAccess) {
       throw new Error('FORBIDDEN');
