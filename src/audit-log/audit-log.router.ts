@@ -10,4 +10,9 @@ const router = express.Router();
  */
 router.post('/audit-logs', authGuard, auditLogGuard, auditLogController.store);
 
+/**
+ * 取消审核
+ */
+router.post('/revoke-audit', authGuard, auditLogController.revoke);
+
 export default router;

@@ -37,3 +37,14 @@ export const getAuditLogByResource = async (options: GetAuditLogByResourceOption
 
   return data as Array<AuditLogModel>;
 };
+
+/**
+ * 删除审核日志
+ */
+export const deleteAuditLog = async (auditLogId: number) => {
+  const statement = `DELETE FROM audit_log WHERE id = ?`;
+
+  const [data] = await connection.promise().query(statement, auditLogId);
+
+  return data;
+};
