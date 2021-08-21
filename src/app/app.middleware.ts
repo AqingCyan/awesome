@@ -93,6 +93,10 @@ export const defaultErrorHandler = (
       statusCode = 400;
       message = '无法处理您的请求';
       break;
+    case 'FORBIDDEN':
+      statusCode = 403;
+      message = '没有权限访问';
+      break;
     default:
       statusCode = 500;
       message = '服务暂时出了一些问题～～ 🌴';

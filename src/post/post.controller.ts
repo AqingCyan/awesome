@@ -167,9 +167,21 @@ export const destroyPostTag = async (request: Request, response: Response, next:
  */
 export const show = async (request: Request, response: Response, next: NextFunction) => {
   const { postId } = request.params;
+  const { user: currentUser } = request;
 
   try {
     const post = await getPostById(parseInt(postId, 10), { currentUser: request.user });
+
+    // 检查权限，获取发布内容时，如果内容未发布，用户也不是管理员，也不是内容所有者，那就不允许访问
+    const ownPost = post.user.id === currentUser.id;
+    const isAdmin = currentUser.id === 1;
+    const isPublished = post.status === PostStatus.published;
+    const canAccess = isAdmin || ownPost || isPublished;
+
+    if (!canAccess) {
+      throw new Error('FORBIDDEN');
+    }
+
     response.send(post);
   } catch (error) {
     next(error);

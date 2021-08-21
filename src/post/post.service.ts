@@ -202,6 +202,7 @@ export const getPostById = async (postId: number, options: GetPostByIdOptions = 
       post.id,
       post.title,
       post.content,
+      post.status,
       ${sqlFragment.user},
       ${sqlFragment.totalComments},
       ${sqlFragment.file},
@@ -223,7 +224,7 @@ export const getPostById = async (postId: number, options: GetPostByIdOptions = 
 
   const [data] = await connection.promise().query(statement, postId);
 
-  if (!data[0]) {
+  if (!data[0] || !data[0].id) {
     throw new Error('NOT_FOUND');
   }
 
