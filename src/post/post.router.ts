@@ -2,7 +2,7 @@ import express from 'express';
 import * as postController from './post.controller';
 import { requestUrl } from '../app/app.middleware';
 import { authGuard, accessControl } from '../auth/auth.middlerware';
-import { sort, filter, paginate, validatePostStatus } from './post.middleware';
+import { sort, filter, paginate, validatePostStatus, modeSwitcher } from './post.middleware';
 import { POSTS_PER_PAGE } from '../app/app.config';
 
 const router = express.Router();
@@ -17,6 +17,7 @@ router.get(
   filter,
   paginate(POSTS_PER_PAGE),
   validatePostStatus,
+  modeSwitcher,
   postController.index,
 );
 

@@ -17,9 +17,9 @@ export interface GetPostsOptionsPagination {
   offset: number;
 }
 export enum PostStatus {
-  published,
-  draft,
-  archived,
+  published = 'published',
+  draft = 'draft',
+  archived = 'archived',
 }
 interface GetPostsOptions {
   sort?: string;
