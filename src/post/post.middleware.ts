@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { PostStatus } from './post.service';
+import { AuditLogStatus } from '../audit-log/audit-log.model';
 
 /**
  * 排序方式
@@ -153,7 +154,9 @@ export const modeSwitcher = async (request: Request, response: Response, next: N
     }
   } else {
     // 普通模式
+    // 只能请求已发布的且审核通过的
     request.query.status = PostStatus.published;
+    request.query.auditStatus = AuditLogStatus.approved;
   }
 
   next();

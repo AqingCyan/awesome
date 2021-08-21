@@ -23,13 +23,14 @@ import { PostModel } from './post.model';
  */
 export const index = async (request: Request, response: Response, next: NextFunction) => {
   // 解构查询符
-  const { status = '' } = request.query;
+  const { status = '', auditStatus } = request.query;
 
   try {
     // 统计一下符合条件的内容数量
     const totalCount = await getPostsTotalCount({
       filter: request.filter,
       status: status as string,
+      auditStatus: auditStatus as string,
     });
 
     response.header('X-Total-Count', totalCount);
@@ -44,6 +45,7 @@ export const index = async (request: Request, response: Response, next: NextFunc
       pagination: request.pagination,
       currentUser: request.user,
       status: status as string,
+      auditStatus: auditStatus as string,
     });
     response.send(posts);
   } catch (error) {
