@@ -11,7 +11,7 @@ export const createAccessLog = async (accessLog: AccessLogModel) => {
   const [data] = await connection.promise().query(statement, accessLog);
 
   // 触发日志已创建事件
-  socketIoServer.emit('accessLogCreated', accessLog);
+  socketIoServer.emit('accessLogCreated', accessLog.action);
 
   return data;
 };
