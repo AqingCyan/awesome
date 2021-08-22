@@ -170,7 +170,7 @@ export const getCommentById = async (commentId: number, options: GetCommentsById
       comment.id,
       comment.content,
       ${sqlFragment.user},
-      ${sqlFragment.post},
+      ${sqlFragment.post}
       ${resourceType === 'replay' ? `, ${sqlFragment.repliedComment}` : ''}
       ${resourceType === 'comment' ? `, ${sqlFragment.totalReplies}` : ''}
     FROM

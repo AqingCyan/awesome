@@ -44,6 +44,7 @@ router.patch(
   authGuard, // 一定要先用 authGuard 验证登录状态，next 后，request 才有 user，才能进行访问控制
   accessControl({ possessions: true }),
   validatePostStatus,
+  accessLog({ action: 'updatePost', resourceType: 'post', resourceParamName: 'postId' }),
   postController.update,
 );
 
@@ -55,6 +56,7 @@ router.delete(
   requestUrl,
   authGuard, // 一定要先用 authGuard 验证登录状态，next 后，request 才有 user，才能进行访问控制
   accessControl({ possessions: true }),
+  accessLog({ action: 'deletePost', resourceType: 'post', resourceParamName: 'postId' }),
   postController.destroy,
 );
 
@@ -66,6 +68,12 @@ router.post(
   requestUrl,
   authGuard,
   accessControl({ possessions: true }),
+  accessLog({
+    action: 'createPostTag',
+    resourceType: 'post',
+    resourceParamName: 'postId',
+    payloadParam: 'body.name',
+  }),
   postController.storePostTag,
 );
 
@@ -77,12 +85,22 @@ router.delete(
   requestUrl,
   authGuard,
   accessControl({ possessions: true }),
+  accessLog({
+    action: 'deletePostTag',
+    resourceType: 'post',
+    resourceParamName: 'postId',
+    payloadParam: 'body.tagId',
+  }),
   postController.destroyPostTag,
 );
 
 /**
  * 查询单个内容
  */
-router.get('/posts/:postId', postController.show);
+router.get(
+  '/posts/:postId',
+  accessLog({ action: 'getPostById', resourceType: 'post', resourceParamName: 'postId' }),
+  postController.show,
+);
 
 export default router;
