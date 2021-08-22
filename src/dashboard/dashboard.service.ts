@@ -47,3 +47,71 @@ export const getAccessCount = async (options: GetAccessCountOptions) => {
     return accessCount;
   });
 };
+
+/**
+ * 按动作分时段访问次数
+ */
+interface GetAccessCountByActionResult {
+  action: string;
+  datetime: string;
+  value: number;
+}
+interface AccessCount {
+  title: string;
+  action: string;
+  dataset: [Array<string>, Array<number>];
+}
+interface GetAccessCountByActionOptions {
+  action: string;
+  filter: {
+    name: string;
+    sql?: string;
+    param?: string;
+  };
+}
+export const getAccessCountByAction = async (options: GetAccessCountByActionOptions) => {
+  const {
+    filter: { sql: whereDateTimeRange, param: dateTimeFormat },
+    action,
+  } = options;
+
+  const andWhereAction = 'AND action = ?';
+
+  const params = [action];
+
+  const statement = `
+    SELECT
+      access_log.action,
+      DATE_FORMAT(access_log.created, '${dateTimeFormat}') AS datetime,
+      COUNT(access_log.id) AS value
+    FROM
+      access_log
+    WHERE
+      ${whereDateTimeRange} ${andWhereAction}
+    GROUP BY
+      access_log.action,
+      DATE_FORMAT(access_log.created, '${dateTimeFormat}')
+    ORDER BY
+      DATE_FORMAT(access_log.created, '${dateTimeFormat}')
+  `;
+
+  console.log(statement);
+
+  const [data] = await connection.promise().query(statement, params);
+  const results = data as Array<GetAccessCountByActionResult>;
+
+  const dataset = results.reduce(
+    (accumulator, result) => {
+      const [dateTimeArray, valueArray] = accumulator;
+      dateTimeArray.push(result.datetime);
+      valueArray.push(result.value);
+      return accumulator;
+    },
+    [[], []],
+  );
+
+  // 动作标题
+  const title = allowedAccessCounts.find((accessCount) => accessCount.action === action).title;
+
+  return { title, action, dataset } as AccessCount;
+};

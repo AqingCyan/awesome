@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { allowedAccessCounts } from './dashboard.provider';
 
 /**
  * 访问次数过滤器
@@ -36,6 +37,29 @@ export const accessCountsFilter = async (
   }
 
   request.filter = filter;
+
+  next();
+};
+
+/**
+ * 访问次数守卫
+ */
+export const accessCountsGuard = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  const {
+    params: { action },
+  } = request;
+
+  const allowedAccessCountsActions = allowedAccessCounts.map((accessCount) => accessCount.action);
+
+  const isAllowedAction = allowedAccessCountsActions.includes(action);
+
+  if (!isAllowedAction) {
+    next(new Error('BAD_REQUEST'));
+  }
 
   next();
 };
