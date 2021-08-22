@@ -4,6 +4,7 @@ import { requestUrl } from '../app/app.middleware';
 import { authGuard, accessControl } from '../auth/auth.middlerware';
 import { sort, filter, paginate, validatePostStatus, modeSwitcher } from './post.middleware';
 import { POSTS_PER_PAGE } from '../app/app.config';
+import { accessLog } from '../access-log/access-log.middleware';
 
 const router = express.Router();
 
@@ -18,13 +19,21 @@ router.get(
   paginate(POSTS_PER_PAGE),
   validatePostStatus,
   modeSwitcher,
+  accessLog({ action: 'getPosts', resourceType: 'post' }),
   postController.index,
 );
 
 /**
  * 创建内容
  */
-router.post('/posts', requestUrl, authGuard, validatePostStatus, postController.store);
+router.post(
+  '/posts',
+  requestUrl,
+  authGuard,
+  validatePostStatus,
+  accessLog({ action: 'createPost', resourceType: 'post', payloadParam: 'body.title' }),
+  postController.store,
+);
 
 /**
  * 更新内容
