@@ -12,6 +12,7 @@ import avatarRouter from '../avatar/avatar.router';
 import likeRouter from '../like/like.router';
 import searchRouter from '../search/search.router';
 import auditLogRouter from '../audit-log/audit-log.router';
+import dashboardRouter from '../dashboard/dashboard.router';
 import { ALLOW_ORIGIN } from './app.config';
 import { currentUser } from '../auth/auth.middlerware';
 
@@ -55,6 +56,7 @@ app.use(
   likeRouter,
   searchRouter,
   auditLogRouter,
+  dashboardRouter,
 );
 
 /**
