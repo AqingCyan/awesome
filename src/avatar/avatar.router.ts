@@ -21,6 +21,6 @@ router.post(
 /**
  * 头像查询服务
  */
-router.get('/avatar/:userId/avatar', avatarController.serve);
+router.get('/users/:userId/avatar', avatarController.serve);
 
 export default router;
