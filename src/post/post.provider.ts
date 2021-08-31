@@ -81,7 +81,7 @@ export const sqlFragment = {
       SELECT COUNT(user_like_post.postId)
       FROM user_like_post
       WHERE user_like_post.postId = post.id
-    ) AS totalLike
+    ) AS totalLikes
   `,
   innerJoinUserLikePost: `
     INNER JOIN user_like_post
